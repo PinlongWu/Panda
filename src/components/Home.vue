@@ -77,11 +77,44 @@
             <span class="line"></span>
         </div>
         <!-- 列表无限刷 -->
-        <div class="wireless-list"></div>
+        <div class="wireless-list" >
+            <van-list
+                v-model="loading"
+                :finished="finished"
+                finished-text="没有更多了"
+                loading-text='小二加载中...'
+                @load="onLoad"
+                >
+                <div class="van-clearfix">
+                <van-cell v-for="item in list" :key="item.id">
+                    <div class="commodity-card float-item">
+                        <div v-if='item.type===1'>
+                            <div class="commodity-img"><img :src="item.image"/></div>
+                            <div class="commodity-title">{{item.title}}</div>
+                            <div class="commodity-platform-isFreePostage">
+                                <div class="platform" :style="{background:item.platform===2?'#df2b2f':'#f40'}" >{{item.platform===2?'天猫':'淘宝'}}</div>
+                                <div class="isFreePostage">{{item.isFreePostage === true ? '包邮' : '不包邮'}}</div>
+                            </div>
+                            <div class="commodity-price"><i>￥</i>{{item.price}}</div>
+                            <div class="commodity-saleNum-couponValue">
+                                <div class="saleNum">{{item.saleNum}}已卖</div>
+                                <div class="couponValue">{{item.couponValue}}</div>
+                            </div>
+                        </div>
+                        <div v-else>
+                            <div class="commodity-else"><img :src="item.image"/></div>
+                        </div>
+                    </div>
+                </van-cell>
+                </div>
+            </van-list>
+        </div>
+
     </div>
 </template>
 <script>
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
+import _ from 'lodash'
 export default {
   components: {
     swiper,
@@ -99,7 +132,13 @@ export default {
         spaceBetween: 10,
         loop: true,
         speed: 600 // config参数同swiper4,与官网一致
-      }
+      },
+      list: [],
+      loading: false,
+      finished: false,
+      refreshing: false,
+      start: 0,
+      isEnd: false
     }
   },
   mounted () {
@@ -111,6 +150,18 @@ export default {
       console.log(res.data.topList)
       this.gridsV = res.data.gridsV2
       this.toplist = [...res.data.topList, '']
+    },
+    async onLoad () {
+      this.loading = true
+      this.finished = false
+      const { data: res } = await this.$http.get(`http://www.xiongmaoyouxuan.com/api/tab/1/feeds?start=${this.start}`)
+      this.list = [...this.list, ..._.get(res, 'data.list')]
+      this.loading = false
+      this.start = _.get(res, 'data.nextIndex')
+      this.isEnd = _.get(res, 'data.isEnd')
+      if (this.isEnd) {
+        this.finished = true
+      }
     }
   }
 }
@@ -378,6 +429,84 @@ export default {
             box-sizing: border-box;
             margin-top: -3px;
             margin-left: 20px;
+        }
+    }
+}
+.van-cell{
+    width: 49vw !important;
+    float: left;
+    margin-bottom: 1vh;
+    height: 270px;
+    padding: 5px;
+}
+.van-cell:nth-child(2n+1){
+    margin-right: 2vw;
+}
+.commodity-card{
+    .commodity-img{
+        width: 100%;
+        height: 25vh;;
+        img{
+            width: 100%;
+            display: block;
+        }
+    }
+    .commodity-title{
+        font-size: 1vh;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 44.9vw;
+        line-height: 7vh;
+    }
+    .commodity-platform-isFreePostage{
+        margin: -1vh 0 0.5vh 0;
+        height: 2.7vh;
+            .platform{
+            font-size: 1vh;
+            color: #fff;
+            display: inline-block;
+            border-radius: 3px;
+            margin-left: 6px;
+            line-height: 1.5;
+            float: left;
+        }
+        .isFreePostage{
+            font-size: 1vh;
+            line-height: 1.5;
+            float: right;
+            color: #877a73;
+            margin-right: 9px;
+        }
+    }
+    .commodity-price{
+        color: #fa585a;
+        font-size: 2.14vh;
+        font-weight: 500;
+            i{
+                font-size: 2.2vh;
+                margin-left: -5px;
+            }
+    }
+    .saleNum{
+        font-size: 1.6vh;
+        color: #877a73;
+        line-height: 1;
+        margin: -12px 0 0 56px;
+    }
+    .couponValue{
+        float: right;
+        color: red;
+        font-size: 1.2vh;
+        border: 1px solid red;
+        line-height: 1;
+        margin: -13px 0 0 0;
+    }
+    .commodity-else{
+        img{
+            width: 100%;
+            height: 100%;
+            display: block;
         }
     }
 }

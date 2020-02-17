@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { Button, Icon, Row, Col, Search, Tabs, Tab, Tag, Swipe, SwipeItem, Lazyload } from 'vant'
+import { Button, Icon, Row, Col, Search, Tabs, Tab, Tag, Swipe, SwipeItem, Lazyload, List, Cell, PullRefresh } from 'vant'
 
 Vue.use(Button)
 Vue.use(Icon)
@@ -12,3 +12,6 @@ Vue.use(Tag)
 Vue.use(Swipe)
 Vue.use(SwipeItem)
 Vue.use(Lazyload)
+Vue.use(List)
+Vue.use(Cell)
+Vue.use(PullRefresh)
