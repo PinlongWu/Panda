@@ -12,9 +12,23 @@
             <div class="recommend">今日推荐</div>
             <div class="xian"></div>
             <van-tabs background="#fdde4a" :ellipsis="false">
-                <van-tab v-for="(item,index) in title" :title="item" :key="index"></van-tab>
+                <van-tab v-for="(item,index) in title" :title="item.name" :key="index" to="item.type"></van-tab>
             </van-tabs>
-            <div class="iconnav"><van-icon name="wap-nav" size="5vh"/></div>
+            <div class="iconnav" @click="iconnav"><van-icon name="wap-nav" size="5vh"/></div>
+        </div>
+        <div class="float-tabs" ref="tabsooo" style="display:none">
+            <div class="float-tabs-sou">
+                    <div class="float-tabs-lei">全部分类</div>
+                    <div class="float-tabs-cha" @click="tabsnone">x</div>
+            </div>
+            <ul>
+                <li v-for="items in tabs" :key="items.id" class="float-tabs-lis">
+                    <div class="float-tabs-div">
+                        <img :src="items.imageUrl"/>
+                        <div class="float-tabs-text">{{items.name}}</div>
+                    </div>
+                </li>
+            </ul>
         </div>
         <!-- 三个广告部位 -->
         <router-view></router-view>
@@ -77,52 +91,23 @@
             <span class="line"></span>
         </div>
         <!-- 列表无限刷 -->
-        <div class="wireless-list" >
-            <van-list
-                v-model="loading"
-                :finished="finished"
-                finished-text="没有更多了"
-                loading-text='小二加载中...'
-                @load="onLoad"
-                >
-                <div class="van-clearfix">
-                <van-cell v-for="item in list" :key="item.id">
-                    <div class="commodity-card float-item">
-                        <div v-if='item.type===1'>
-                            <div class="commodity-img"><img :src="item.image"/></div>
-                            <div class="commodity-title">{{item.title}}</div>
-                            <div class="commodity-platform-isFreePostage">
-                                <div class="platform" :style="{background:item.platform===2?'#df2b2f':'#f40'}" >{{item.platform===2?'天猫':'淘宝'}}</div>
-                                <div class="isFreePostage">{{item.isFreePostage === true ? '包邮' : '不包邮'}}</div>
-                            </div>
-                            <div class="commodity-price"><i>￥</i>{{item.price}}</div>
-                            <div class="commodity-saleNum-couponValue">
-                                <div class="saleNum">{{item.saleNum}}已卖</div>
-                                <div class="couponValue">{{item.couponValue}}</div>
-                            </div>
-                        </div>
-                        <div v-else>
-                            <div class="commodity-else"><img :src="item.image"/></div>
-                        </div>
-                    </div>
-                </van-cell>
-                </div>
-            </van-list>
-        </div>
+        <BaseList :httpParams='httpParams'/>
 
+        <div class="toponscroll" style="display:none" @click="topnone"><img src="../assets/top.png"/></div>
     </div>
 </template>
 <script>
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
-import _ from 'lodash'
+import BaseList from '../components/base/BaseList'
 export default {
   components: {
     swiper,
-    swiperSlide
+    swiperSlide,
+    BaseList
   },
   data () {
     return {
-      title: ['女装', '男装', '美妆护肤', '配饰', '女鞋', '男鞋', '零食', '内衣袜子', '母婴用品', '箱包', '个人洗护', '数码家电', '成人用品', '日用家居', '文体娱乐'],
+      title: [{ name: '女装', type: '/girl' }, { name: '男装', type: '/' }, { name: '美妆护肤', type: '/girl' }, { name: '配饰', type: '/girl' }, { name: '女鞋', type: '/girl' }, { name: '男鞋', type: '/girl' }, { name: '零食', type: '/girl' }, { name: '内衣袜子', type: '/girl' }, { name: '母婴用品', type: '/girl' }, { name: '箱包', type: '/girl' }, { name: '个人洗护', type: '/girl' }, { name: '数码家电', type: '/girl' }, { name: '成人用品', type: '/girl' }],
       gridsV: [],
       toplist: [],
       itemslist: [],
@@ -133,16 +118,21 @@ export default {
         loop: true,
         speed: 600 // config参数同swiper4,与官网一致
       },
-      list: [],
-      loading: false,
-      finished: false,
-      refreshing: false,
-      start: 0,
-      isEnd: false
+      tabs: [],
+      keys: true,
+      timer: null,
+      httpParams: {
+        url: 'http://www.xiongmaoyouxuan.com/api/tab/1?start=',
+        type: 'feeds'
+      }
     }
   },
   mounted () {
     this.gridsjs()
+    this.listenerFunction() // 滚动监听
+  },
+  beforeDestroy () { // 滚动监听
+    document.removeEventListener('scroll', this.listenerFunction)
   },
   methods: {
     async gridsjs () {
@@ -150,18 +140,42 @@ export default {
       console.log(res.data.topList)
       this.gridsV = res.data.gridsV2
       this.toplist = [...res.data.topList, '']
+      const { data: tablist } = await this.$http.get('http://www.xiongmaoyouxuan.com/api/tabs?sa=')
+      console.log(tablist.data.list)
+      this.tabs = tablist.data.list
     },
-    async onLoad () {
-      this.loading = true
-      this.finished = false
-      const { data: res } = await this.$http.get(`http://www.xiongmaoyouxuan.com/api/tab/1/feeds?start=${this.start}`)
-      this.list = [...this.list, ..._.get(res, 'data.list')]
-      this.loading = false
-      this.start = _.get(res, 'data.nextIndex')
-      this.isEnd = _.get(res, 'data.isEnd')
-      if (this.isEnd) {
-        this.finished = true
+    // 滚动监听
+    listenerFunction (e) {
+      document.addEventListener('scroll', this.handleScroll, true)
+    },
+    handleScroll () {
+      var scrollUp = document.getElementsByClassName('toponscroll')[0]
+      var scollTop = window.document.scollTop || document.documentElement.scrollTop
+      if (scollTop >= 1500) {
+        scrollUp.style.display = 'block'
+      } else {
+        scrollUp.style.display = 'none'
       }
+    },
+    topnone () {
+      var scollTop = window.document.scrollTop || document.documentElement.scrollTop
+      if (this.keys) {
+        this.timer = setInterval(this.topnone, 10)
+      }
+      if (scollTop > 1) {
+        window.document.scrollTop = document.documentElement.scrollTop = scollTop - scollTop / 10 // 减速运动
+        this.keys = false // 关闭开关
+      } else {
+        window.document.scrollTop = 0
+        clearInterval(this.timer)
+        this.keys = true
+      }
+    },
+    tabsnone () {
+      this.$refs.tabsooo.style.display = 'none'
+    },
+    iconnav () {
+      this.$refs.tabsooo.style.display = 'block'
     }
   }
 }
@@ -173,6 +187,9 @@ export default {
     background-color: #fdde4a;
     line-height: 10.5vh;
     text-align: center;
+    position: fixed;
+        top: 0;
+        z-index: 123;
     .van-button{
         width: 90vw;
         height: 7vh;
@@ -194,6 +211,9 @@ export default {
     width: 100vw;
     background-color: #fdde4a;
     display: flex;
+    position: fixed;
+    top: 9.9vh;
+    z-index: 100;
     .recommend{
         width: 18vw;
         padding-top: 1.5vh;
@@ -209,7 +229,7 @@ export default {
         flex: 1;
     }
     .iconnav{
-        z-index: 100000000;
+        z-index: 100;
         width: 10vw;
         margin-top: 0.7vh;
     }
@@ -507,6 +527,71 @@ export default {
             width: 100%;
             height: 100%;
             display: block;
+        }
+    }
+}
+.toponscroll{
+    width: 15vw;
+    height: 7vh;
+    position: fixed;
+    right: 8vw;
+    bottom: 8vh;
+    z-index: 10;
+    border-radius: 50%;
+    img{
+        width: 100%;
+        display: block;
+    }
+}
+.float-tabs{
+    width: 100vw;
+    height: 58vh;
+    background: #fff;
+    z-index: 1000;
+    position: absolute;
+    top: 10vh;
+    border-bottom: 4vh solid #e2d7d7;
+    .float-tabs-sou{
+        height: 5vh;
+        background: #fdde4a;
+        line-height: 5vh;
+        position: relative;
+        .float-tabs-lei{
+            text-align: center;
+            color: #877a73;
+            font-size: 2vh;
+            font-weight: 500;
+        }
+        .float-tabs-cha{
+            position: absolute;
+            top: 0vh;
+            right: 4vw;
+            font-size: 3vh;
+            color: #877a73;
+        }
+    }
+    ul{
+        width: 100%;
+        height: 100%;
+        padding-left: 2vh;
+        .float-tabs-lis{
+            width: 22vw;
+            float: left;
+            margin: 0 2vh;
+            margin: 0 1vh 1vh 0;
+            .float-tabs-div{
+                width: 100%;
+                height: 100%;
+                text-align: center;
+                img{
+                    width: 20vw;
+                    height: 10vh;
+                }
+                .float-tabs-text{
+                    font-size: 1vh;
+                    color: #877a73;
+                }
+            }
         }
     }
 }

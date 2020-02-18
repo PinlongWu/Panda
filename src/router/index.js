@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../components/Home.vue'
 import Search from '../components/chilendrouter/search.vue'
 import Recommend from '../components/chilendrouter/recommend.vue'
+import Girl from '../pages/home/girl.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -18,6 +19,10 @@ const routes = [
       {
         path: '/recommend',
         component: Recommend
+      },
+      {
+        path: '/girl',
+        component: Girl
       }
     ]
   },
