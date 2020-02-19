@@ -1,3 +1,4 @@
+/* eslint-disable space-before-function-paren */
 <template>
     <div>
         <!-- 列表无限刷 -->
@@ -56,6 +57,14 @@ export default {
   mounted () {
     this.listenerFunction() // 滚动监听
   },
+  watch: {
+    '$route' (to, from) {
+      if (to.params.id !== from.params.id) {
+        this.list = []
+        this.onLoad()
+      }
+    }
+  },
   beforeDestroy () { // 滚动监听
     document.removeEventListener('scroll', this.listenerFunction)
   },
@@ -64,7 +73,7 @@ export default {
       const { url, type } = this.httpParams
       this.loading = true
       this.finished = false
-      console.log(this.httpParams, 'wuusu')
+      // console.log(this.httpParams, 'wuusu')
       let { data: res } = await this.$http.get(url + this.start)
       res = await this.responseDate(res, type)
       this.list = [...this.list, ..._.get(res, 'data.list')]
@@ -76,7 +85,7 @@ export default {
       }
     },
     async responseDate (res, type) {
-      console.log(res, type)
+      // console.log(res, type)
       if (type === 'feeds') {
         return { data: { ...res.data.items } }
       }

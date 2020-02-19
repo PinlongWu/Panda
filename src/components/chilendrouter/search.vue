@@ -65,7 +65,7 @@ export default {
         line-height: 9.5vh;
     }
     .van-search{
-        padding: 14.6px 0;
+        padding: 2.65vh 0;
     }
     .search_tag{
         padding: 12vw;

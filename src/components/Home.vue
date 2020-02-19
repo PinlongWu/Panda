@@ -9,10 +9,10 @@
         </div>
         <!-- 导航 -->
         <div class="Home-nav">
-            <div class="recommend">今日推荐</div>
+            <div class="recommend" @click="recommendclick">今日推荐</div>
             <div class="xian"></div>
-            <van-tabs background="#fdde4a" :ellipsis="false">
-                <van-tab v-for="(item,index) in title" :title="item.name" :key="index" to="item.type"></van-tab>
+            <van-tabs v-model='activeName' background="#fdde4a" :ellipsis="false">
+                <van-tab v-for="(item,index) in title" :title="item.name" :name='item.id' :key="index" :to="{ name: 'girl', params: { id: item.id }}"></van-tab>
             </van-tabs>
             <div class="iconnav" @click="iconnav"><van-icon name="wap-nav" size="5vh"/></div>
         </div>
@@ -92,7 +92,6 @@
         </div>
         <!-- 列表无限刷 -->
         <BaseList :httpParams='httpParams'/>
-
         <div class="toponscroll" style="display:none" @click="topnone"><img src="../assets/top.png"/></div>
     </div>
 </template>
@@ -107,7 +106,7 @@ export default {
   },
   data () {
     return {
-      title: [{ name: '女装', type: '/girl' }, { name: '男装', type: '/' }, { name: '美妆护肤', type: '/girl' }, { name: '配饰', type: '/girl' }, { name: '女鞋', type: '/girl' }, { name: '男鞋', type: '/girl' }, { name: '零食', type: '/girl' }, { name: '内衣袜子', type: '/girl' }, { name: '母婴用品', type: '/girl' }, { name: '箱包', type: '/girl' }, { name: '个人洗护', type: '/girl' }, { name: '数码家电', type: '/girl' }, { name: '成人用品', type: '/girl' }],
+      title: [{ name: '女装', id: 2 }, { name: '男装', id: 5 }, { name: '美妆护肤', id: 3 }, { name: '配饰', id: 4 }, { name: '女鞋', id: 13 }, { name: '男鞋', id: 19 }, { name: '零食', id: 10 }, { name: '内衣袜子', id: 16 }, { name: '母婴用品', id: 24 }, { name: '箱包', id: 14 }, { name: '个人洗护', id: 15 }, { name: '数码家电', id: 12 }, { name: '成人用品', id: 17 }],
       gridsV: [],
       toplist: [],
       itemslist: [],
@@ -118,6 +117,7 @@ export default {
         loop: true,
         speed: 600 // config参数同swiper4,与官网一致
       },
+      activeName: parseInt(this.$route.params.id) || 2,
       tabs: [],
       keys: true,
       timer: null,
@@ -128,6 +128,7 @@ export default {
     }
   },
   mounted () {
+    console.log(this.$route)
     this.gridsjs()
     this.listenerFunction() // 滚动监听
   },
@@ -137,11 +138,11 @@ export default {
   methods: {
     async gridsjs () {
       const { data: res } = await this.$http.get('http://www.xiongmaoyouxuan.com/api/tab/1?start=0')
-      console.log(res.data.topList)
+      //   console.log(res.data.topList)
       this.gridsV = res.data.gridsV2
       this.toplist = [...res.data.topList, '']
       const { data: tablist } = await this.$http.get('http://www.xiongmaoyouxuan.com/api/tabs?sa=')
-      console.log(tablist.data.list)
+      //   console.log(tablist.data.list)
       this.tabs = tablist.data.list
     },
     // 滚动监听
@@ -176,6 +177,9 @@ export default {
     },
     iconnav () {
       this.$refs.tabsooo.style.display = 'block'
+    },
+    recommendclick () {
+      this.$router.push('/recommend')
     }
   }
 }

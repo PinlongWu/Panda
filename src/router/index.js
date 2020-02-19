@@ -21,7 +21,8 @@ const routes = [
         component: Recommend
       },
       {
-        path: '/girl',
+        path: '/girl/:id',
+        name: 'girl',
         component: Girl
       }
     ]
