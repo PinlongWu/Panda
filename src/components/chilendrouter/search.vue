@@ -52,17 +52,17 @@ export default {
 <style lang="less" scoped>
     .search-return{
         display: block;
-        height: 9.5vh;
+        height: 10.4vh;
         text-align: center;
-        line-height: 9.5vh;
+        line-height: 10.5vh;
         background: #fdde4a;
     }
     .search-search{
         display: block;
-        height: 9.5vh;
+        height: 10.4vh;
         text-align: center;
         background: #fdde4a;
-        line-height: 9.5vh;
+        line-height: 10.5vh;
     }
     .van-search{
         padding: 2.65vh 0;

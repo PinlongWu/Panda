@@ -549,7 +549,7 @@ export default {
 }
 .float-tabs{
     width: 100vw;
-    height: 58vh;
+    height: 62vh;
     background: #fff;
     z-index: 1000;
     position: absolute;

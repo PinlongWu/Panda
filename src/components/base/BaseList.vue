@@ -70,16 +70,22 @@ export default {
   },
   methods: {
     async onLoad () {
-      const { url, type } = this.httpParams
+      const { url, type, isGirl = false } = this.httpParams
       this.loading = true
       this.finished = false
-      // console.log(this.httpParams, 'wuusu')
       let { data: res } = await this.$http.get(url + this.start)
       res = await this.responseDate(res, type)
       this.list = [...this.list, ..._.get(res, 'data.list')]
       this.loading = false
       this.start = _.get(res, 'data.nextIndex')
       this.isEnd = _.get(res, 'data.isEnd')
+      if (isGirl && this.list.length === 0) {
+        if (this.isEnd) {
+          this.$router.push({ path: '/empty' })
+        } else {
+          this.onLoad()
+        }
+      }
       if (this.isEnd) {
         this.finished = true
       }
@@ -88,6 +94,8 @@ export default {
       // console.log(res, type)
       if (type === 'feeds') {
         return { data: { ...res.data.items } }
+      } else if (type === 'fiil') {
+        return { data: { ...res.data } }
       }
     },
     // 滚动监听
@@ -177,6 +185,7 @@ export default {
         height: 25vh;;
         img{
             width: 100%;
+            height: 100%;
             display: block;
         }
     }

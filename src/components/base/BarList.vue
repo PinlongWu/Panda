@@ -8,7 +8,7 @@
       </div>
       <div class="list">
           <ul>
-              <li v-for="item in tarlist.data.categories" :key="item.id">
+              <li v-for="item in tarlist.data.categories" :key="item.id" @click="jumphttp(item)">
                   <img :src="item.imageUrl"/>
                   <div class="listtext">{{item.title}}</div>
               </li>
@@ -22,7 +22,8 @@
 export default {
   data () {
     return {
-      tarlist: { data: { categories: [] } }
+      tarlist: { data: { categories: [] } },
+      cateurls: []
     }
   },
   mounted () {
@@ -41,6 +42,14 @@ export default {
         `http://www.xiongmaoyouxuan.com/api/tab/${this.$route.params.id}?start=0`
       )
       this.tarlist = res
+      this.cateurls = res.data.categories
+    },
+    jumphttp (val) {
+      if (val.url.indexOf('column') === -1) {
+        this.$router.push({ path: '/girllists', query: { port: val.url.substring(val.url.length - 4) } })
+      } else {
+        this.$router.push({ path: '/girlhome', query: { port: val.url.substring(val.url.length - 4) } })
+      }
     }
   }
 }
@@ -48,7 +57,7 @@ export default {
 <style lang="less" scoped>
 .bar-list-bigbox {
   width: 100vw;
-  height: 40vh;
+  height: 47vh;
   background: #fff;
   .bar-list-title {
     line-height: 5vh;
