@@ -1,12 +1,7 @@
 <template>
     <div>
         <!-- 头部搜索框 -->
-        <div class="Home-search">
-            <van-button to="search">
-                <van-icon name="search" size="5vh"/>
-                <span>搜索商品,发现更多优选</span>
-            </van-button>
-        </div>
+        <Search />
         <!-- 导航 -->
         <div class="Home-nav">
             <div class="recommend" @click="recommendclick">今日推荐</div>
@@ -22,7 +17,7 @@
                     <div class="float-tabs-cha" @click="tabsnone">x</div>
             </div>
             <ul>
-                <li v-for="items in tabs" :key="items.id" class="float-tabs-lis">
+                <li v-for="items in tabs" :key="items.id" class="float-tabs-lis" @click="tohttp(items)">
                     <div class="float-tabs-div">
                         <img :src="items.imageUrl"/>
                         <div class="float-tabs-text">{{items.name}}</div>
@@ -98,11 +93,13 @@
 <script>
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import BaseList from '../components/base/BaseList'
+import Search from '../components/search/search'
 export default {
   components: {
     swiper,
     swiperSlide,
-    BaseList
+    BaseList,
+    Search
   },
   data () {
     return {
@@ -180,6 +177,14 @@ export default {
     },
     recommendclick () {
       this.$router.push('/recommend')
+    },
+    tohttp (valid) {
+      if (valid.id === 1) {
+        this.$router.push('/recommend')
+      } else {
+        this.$router.push({ name: 'girl', params: { id: valid.id } })
+      }
+      this.$refs.tabsooo.style.display = 'none'
     }
   }
 }

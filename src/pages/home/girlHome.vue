@@ -7,7 +7,7 @@
     </div>
 </template>
 <script>
-import Search from '../../components/base/search'
+import Search from '../../components/search/search'
 import Nav from '../../components/base/Nav'
 import BaseList from '../../components/base/BaseList'
 export default {

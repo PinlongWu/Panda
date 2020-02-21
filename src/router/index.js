@@ -1,12 +1,14 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../components/Home.vue'
-import Search from '../components/chilendrouter/search.vue'
+import SearchTypes from '../components/search/searchTypes.vue'
 import Recommend from '../components/chilendrouter/recommend.vue'
 import Girl from '../pages/home/girl.vue'
 import GrilHome from '../pages/home/girlHome.vue'
 import GirlLists from '../pages/home/girllists.vue'
 import Empty from '../pages/empty'
+import Commoditylist from '../pages/empty/Commodity_list.vue'
+import SearchBox from '../components/search/Search_box.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -41,8 +43,20 @@ const routes = [
     ]
   },
   {
-    path: '/search',
-    component: Search
+    path: '/SearchBox',
+    component: SearchBox,
+    redirect: '/SearchTypes',
+    children: [
+      {
+        path: '/SearchTypes',
+        component: SearchTypes
+      },
+      {
+        path: '/commoditylist',
+        name: 'commoditylist',
+        component: Commoditylist
+      }
+    ]
   },
   {
     path: '/empty',

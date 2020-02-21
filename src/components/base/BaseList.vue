@@ -59,6 +59,10 @@ export default {
   },
   watch: {
     '$route' (to, from) {
+      if (to.query.type === 'search' && (to.query.keyword !== from.query.keyword || to.query.sort !== from.query.sort)) {
+        this.list = []
+        this.onLoad()
+      }
       if (to.params.id !== from.params.id) {
         this.list = []
         this.onLoad()
