@@ -28,7 +28,7 @@
         <!-- 三个广告部位 -->
         <router-view></router-view>
         <div class="grids">
-            <div class="grid-left">
+            <div class="grid-left" @click="leftadvertising(gridsV)">
                 <div class="gridv-lft">
                     <div class="gridv-title">{{_.get(gridsV,[0,'title'])}}</div>
                     <div class="gridv-text">{{_.get(gridsV,[0,'text'])}}</div>
@@ -36,7 +36,7 @@
                 <div class="gridv-img"><img :src="_.get(gridsV,[0,'imageUrl'])"/></div>
             </div>
             <div class="grid-right">
-                <div class="grid-right-top">
+                <div class="grid-right-top" @click="right_top_advertising(gridsV)">
                     <div class="grid-right-top-left">
                         <div class="grid-right-top-left-title">{{_.get(gridsV,[1,'title'])}}</div>
                         <div class="grid-right-top-left-text">{{_.get(gridsV,[1,'text'])}}</div>
@@ -44,7 +44,7 @@
                     <div class="grid-right-top-img"><img :src="_.get(gridsV,[1,'imageUrl'])"/></div>
                 </div>
                 <div class="grid-right-buttom">
-                    <div class="grid-right-buttom-left">
+                    <div class="grid-right-buttom-left" @click="right_bottom_advertising(gridsV)">
                         <div class="grid-right-buttom-left-title">{{_.get(gridsV,[2,'title'])}}</div>
                         <div class="grid-right-buttom-left-text">{{_.get(gridsV,[2,'text'])}}</div>
                     </div>
@@ -103,7 +103,7 @@ export default {
   },
   data () {
     return {
-      title: [{ name: '女装', id: 2 }, { name: '男装', id: 5 }, { name: '美妆护肤', id: 3 }, { name: '配饰', id: 4 }, { name: '女鞋', id: 13 }, { name: '男鞋', id: 19 }, { name: '零食', id: 10 }, { name: '内衣袜子', id: 16 }, { name: '母婴用品', id: 24 }, { name: '箱包', id: 14 }, { name: '个人洗护', id: 15 }, { name: '数码家电', id: 12 }, { name: '成人用品', id: 17 }],
+      title: [{ name: '女装', id: 2 }, { name: '男装', id: 5 }, { name: '美妆护肤', id: 3 }, { name: '配饰', id: 4 }, { name: '女鞋', id: 13 }, { name: '男鞋', id: 19 }, { name: '零食', id: 10 }, { name: '内衣袜子', id: 16 }, { name: '母婴用品', id: 24 }, { name: '箱包', id: 14 }, { name: '个人洗护', id: 15 }, { name: '数码家电', id: 12 }, { name: '成人用品', id: 17 }, { name: '日用家居', id: 7 }, { name: '文体娱乐', id: 11 }],
       gridsV: [],
       toplist: [],
       itemslist: [],
@@ -125,7 +125,6 @@ export default {
     }
   },
   mounted () {
-    console.log(this.$route)
     this.gridsjs()
     this.listenerFunction() // 滚动监听
   },
@@ -185,6 +184,16 @@ export default {
         this.$router.push({ name: 'girl', params: { id: valid.id } })
       }
       this.$refs.tabsooo.style.display = 'none'
+    },
+    leftadvertising (val) {
+      this.$router.push({ path: '/special', query: { port: val[0].url.substring(val[0].url.length - 2) } })
+    },
+    right_top_advertising (val) {
+      console.log(val)
+      this.$router.push({ path: '/special', query: { port: val[1].url.substring(val[0].url.length - 2) } })
+    },
+    right_bottom_advertising (val) {
+      this.$router.push({ path: '/girlhome', query: { port: val[2].url.substring(val[0].url.length - 2) } })
     }
   }
 }

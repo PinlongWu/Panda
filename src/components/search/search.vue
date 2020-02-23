@@ -2,7 +2,7 @@
     <div>
         <!-- 头部搜索框 -->
         <div class="Home-search">
-            <van-button to="SearchBox">
+            <van-button to="/SearchBox">
                 <van-icon name="search" size="5vh"/>
                 <span>搜索商品,发现更多优选</span>
             </van-button>

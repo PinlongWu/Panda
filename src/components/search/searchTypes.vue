@@ -1,52 +1,70 @@
 <template>
-    <div>
+    <div class="mian">
         <!-- 搜索框下面的字 -->
         <div class="search_tag">
             <p>热门搜索</p>
-            <van-tag round size="large">包包</van-tag>
-            <van-tag round size="large" type="primary">口红</van-tag>
-            <van-tag round size="large" type="success">泡面</van-tag>
-            <van-tag round size="large" type="danger">螺狮粉</van-tag>
-            <van-tag round size="large" type="warning">避孕套</van-tag>
-            <van-tag round size="large">菜籽油</van-tag>
-            <van-tag round size="large" type="primary">充气娃娃</van-tag>
-            <van-tag round size="large" type="success">水果</van-tag>
-            <van-tag round size="large" type="danger">震动棒</van-tag>
+            <van-tag round color="#f5f5f5" v-for="(item,index) in itemword" :key="index" :class="{'active':item.highlight === true}" @click="subword(item)">{{item.word}}</van-tag>
             <p class="shpping">商品分类</p>
-            <van-tag round size="large">女装</van-tag>
-            <van-tag round size="large" type="primary">男装</van-tag>
-            <van-tag round size="large" type="success">美妆护肤</van-tag>
-            <van-tag round size="large" type="danger">配饰</van-tag>
-            <van-tag round size="large" type="warning">女鞋</van-tag>
-            <van-tag round size="large">男鞋</van-tag>
-            <van-tag round size="large" type="primary">零食</van-tag>
-            <van-tag round size="large" type="success">内衣袜子</van-tag>
-            <van-tag round size="large" type="danger">母婴用品</van-tag>
-            <van-tag round size="large">箱包</van-tag>
-            <van-tag round size="large" type="primary">个人洗护</van-tag>
-            <van-tag round size="large" type="success">数码家电</van-tag>
-            <van-tag round size="large" type="danger">成人用品</van-tag>
-            <van-tag round size="large">日用家居</van-tag>
-            <van-tag round size="large" type="primary">文体娱乐 </van-tag>
+            <van-tag round v-for="items in commoditytext" :key="items.id" @click="turngirl(items)">{{items.name}}</van-tag>
         </div>
     </div>
 </template>
 <script>
 export default {
-  // eslint-disable-next-line vue/no-unused-components
+  data () {
+    return {
+      itemword: [],
+      commoditytext: []
+    }
+  },
+  mounted () {
+    this.httpword()
+  },
+  methods: {
+    async httpword () {
+      const { data: res } = await this.$http.get('http://www.xiongmaoyouxuan.com/api/search/home')
+      this.itemword = res.data.hotWords
+      const { data: commodityres } = await this.$http.get('http://www.xiongmaoyouxuan.com/api/tabs?sa=')
+      commodityres.data.list.splice(0, 1)
+      this.commoditytext = commodityres.data.list
+    },
+    subword (val) {
+      console.log(val.word)
+      this.$router.push({ path: 'commoditylist', query: { keyword: val.word, type: 'search' } })
+    },
+    turngirl (val) {
+      this.$router.push({ name: 'girl', params: { id: val.id } })
+      console.log(this.$router)
+    }
+  }
 }
 </script>
 <style lang="less" scoped>
     .search_tag{
-        padding: 12vw;
+        padding: 7vw;
         p{
             font-size: 3vh;
             color: #877a73;
             margin-bottom: 4vh;
         }
         .shpping{
-            margin-top: 16vh;
+            margin-top: 4vh;
             margin-bottom: 4vh;
         }
+    }
+    .van-tag{
+        color: black;
+        height: 4vh;
+        text-align: center;
+        display: inline-block;
+        line-height: 4vh;
+        font-size: 2vh;
+        margin-left: 2vh;
+    }
+    .active{
+        color:#fa585a;
+    }
+    .mian{
+        background: #fff;
     }
 </style>

@@ -67,6 +67,17 @@ export default {
         this.list = []
         this.onLoad()
       }
+    },
+    httpParams: {
+      handler: function (val, oldval) {
+        if (val !== oldval) {
+          this.list = []
+          this.start = 0
+          this.onLoad()
+        }
+      },
+      immediate: true, // 关键
+      deep: true
     }
   },
   beforeDestroy () { // 滚动监听

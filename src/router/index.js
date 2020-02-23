@@ -9,6 +9,7 @@ import GirlLists from '../pages/home/girllists.vue'
 import Empty from '../pages/empty'
 import Commoditylist from '../pages/empty/Commodity_list.vue'
 import SearchBox from '../components/search/Search_box.vue'
+import Special from '../components/base/Special.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -62,6 +63,11 @@ const routes = [
     path: '/empty',
     name: 'empty',
     component: Empty
+  },
+  {
+    path: '/special',
+    name: 'special',
+    component: Special
   }
 ]
 
