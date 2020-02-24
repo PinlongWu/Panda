@@ -27,7 +27,7 @@
                             </div>
                         </div>
                         <div v-else>
-                            <div class="commodity-else"><img :src="item.image"/></div>
+                            <div class="commodity-else" @click="type2(item.url)"><img :src="item.image"/></div>
                         </div>
                     </div>
                 </van-cell>
@@ -59,6 +59,12 @@ export default {
   },
   watch: {
     '$route' (to, from) {
+      // console.log(to, from)
+      if (to.path !== from.path) {
+        this.list = []
+        this.start = 0
+        this.onLoad()
+      }
       if (to.query.type === 'search' && (to.query.keyword !== from.query.keyword || to.query.sort !== from.query.sort)) {
         this.list = []
         this.onLoad()
@@ -139,6 +145,10 @@ export default {
         clearInterval(this.timer)
         this.keys = true
       }
+    },
+    type2 (val) {
+      this.$router.push({ path: '/girlhome', query: { port: val.substring(val.length - 11, val.length - 7) } })
+      // console.log(val.substring(val.length - 11, val.length - 7))
     }
   }
 }

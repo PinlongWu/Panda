@@ -53,7 +53,7 @@
             </div>
         </div>
         <!-- 横向div -->
-        <div class="top-swiper">
+        <div class="top-swiper" @click="imghttp">
             <div class="hot-left">
                 <img src="../assets/Hot.png"/>
             </div>
@@ -189,11 +189,13 @@ export default {
       this.$router.push({ path: '/special', query: { port: val[0].url.substring(val[0].url.length - 2) } })
     },
     right_top_advertising (val) {
-      console.log(val)
       this.$router.push({ path: '/special', query: { port: val[1].url.substring(val[0].url.length - 2) } })
     },
     right_bottom_advertising (val) {
       this.$router.push({ path: '/girlhome', query: { port: val[2].url.substring(val[0].url.length - 2) } })
+    },
+    imghttp () {
+      this.$router.push({ path: '/special', query: { port: 228, type: 'Characteristic' } })
     }
   }
 }
