@@ -14,6 +14,7 @@
                 <van-cell v-for="item in list" :key="item.id">
                     <div class="commodity-card float-item">
                         <div v-if='item.type===1'>
+                          <div @click="type1(item)">
                             <div class="commodity-img"><img :src="item.image"/></div>
                             <div class="commodity-title">{{item.title}}</div>
                             <div class="commodity-platform-isFreePostage">
@@ -25,6 +26,7 @@
                                 <div class="saleNum">{{item.saleNum}}已卖</div>
                                 <div class="couponValue">{{item.couponValue}}</div>
                             </div>
+                          </div>
                         </div>
                         <div v-else>
                             <div class="commodity-else" @click="type2(item.url)"><img :src="item.image"/></div>
@@ -149,6 +151,10 @@ export default {
     type2 (val) {
       this.$router.push({ path: '/girlhome', query: { port: val.substring(val.length - 11, val.length - 7) } })
       // console.log(val.substring(val.length - 11, val.length - 7))
+    },
+    type1 (val) {
+      console.log(val.id)
+      this.$router.push({ path: '/purchase', query: { port: val.id } })
     }
   }
 }
