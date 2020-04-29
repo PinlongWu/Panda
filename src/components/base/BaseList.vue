@@ -149,7 +149,11 @@ export default {
       }
     },
     type2 (val) {
-      this.$router.push({ path: '/girlhome', query: { port: val.substring(val.length - 11, val.length - 7) } })
+      console.log(val)
+      console.log(val.substr(-4))
+      // this.setQuery({ port: val.substring(val.length - 11, val.length - 7) })
+      // this.$router.push({ path: '/girlhome' })
+      this.$router.push({ path: '/girlhome', query: { port: val.substr(-4) } })
       // console.log(val.substring(val.length - 11, val.length - 7))
     },
     type1 (val) {
